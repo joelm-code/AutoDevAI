@@ -1,0 +1,32 @@
+---
+- name: Setup Python Development Environment
+  hosts: localhost
+  tasks:
+    - name: Install Python using Homebrew
+      homebrew:
+        name: python
+        state: present
+
+    - name: Install essential Python packages
+      pip:
+        name:
+          - virtualenv
+          - requests
+          - numpy
+        state: present
+
+    - name: Verify Python installation
+      command: python3 --version
+      register: python_version
+
+    - name: Print Python version
+      debug:
+        msg: "Python version installed: {{ python_version.stdout }}"
+
+    - name: Verify pip installation
+      command: pip3 --version
+      register: pip_version
+
+    - name: Print pip version
+      debug:
+        msg: "pip version installed: {{ pip_version.stdout }}"

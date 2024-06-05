@@ -1,0 +1,18 @@
+# file: setup_environment.yml
+
+- name: Setup Development Environment
+  hosts: localhost
+  tasks:
+    - name: Ensure Homebrew is installed
+      command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /opt/homebrew/bin/brew
+
+    - name: Install essential packages
+      homebrew:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - python
+        - node

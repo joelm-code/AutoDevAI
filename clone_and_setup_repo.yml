@@ -1,0 +1,35 @@
+---
+- name: Clone and Setup Repository
+  hosts: localhost
+  tasks:
+    - name: Clone the Git repository
+      git:
+        repo: 'https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git'
+        dest: '~/projects/YOUR_REPOSITORY'
+
+    - name: Create a virtual environment
+      command: python3 -m venv ~/projects/YOUR_REPOSITORY/venv
+
+    - name: Install requirements (if requirements.txt is present)
+      pip:
+        requirements: ~/projects/YOUR_REPOSITORY/requirements.txt
+        virtualenv: ~/projects/YOUR_REPOSITORY/venv
+      when: stat.exists
+      args:
+        creates: ~/projects/YOUR_REPOSITORY/requirements.txt
+
+    - name: Print virtual environment Python version
+      command: ~/projects/YOUR_REPOSITORY/venv/bin/python --version
+      register: venv_python_version
+
+    - name: Print virtual environment pip version
+      command: ~/projects/YOUR_REPOSITORY/venv/bin/pip --version
+      register: venv_pip_version
+
+    - name: Print Python version in virtual environment
+      debug:
+        msg: "Python version in virtual environment: {{ venv_python_version.stdout }}"
+
+    - name: Print pip version in virtual environment
+      debug:
+        msg: "pip version in virtual environment: {{ venv_pip_version.stdout }}"
